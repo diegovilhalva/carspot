@@ -6,9 +6,13 @@ import { useState } from "react"
 import Link from "next/link"
 import { Separator } from "./ui/separator"
 import { Button } from "./ui/button"
+import useRegisterDialog from "@/hooks/use-register-dialog"
+import useLoginDialog from "@/hooks/use-login-dialog"
 
 
 const Navbar = () => {
+    const {onOpen:onRegisterOpen} = useRegisterDialog()
+    const {onOpen} = useLoginDialog()
     const [searchKeyword, setSearchKeyword] = useState("")
     return (
         <header className="w-full px-3 md:px-0 bg-primary sticky top-0 align-top z-10 h-14" style={{ boxShadow: "1px 1px 4px #50727d66", }}>
@@ -45,11 +49,12 @@ const Navbar = () => {
                 </ul>
                 <div className="ml-auto flex items-center space-x-4 shrink-0">
                     <div className="flex items-center space-x-2">
-                        <button className="text-sm font-extralight text-white">
+                        <button className="text-sm font-extralight text-white" onClick={onOpen}>
                             Sign in
                         </button>
                         <Separator orientation="vertical" className="h-3 text-white"/>
-                        <button className="text-sm font-extralight text-white">
+                        <button className="text-sm font-extralight text-white" 
+                        onClick={onRegisterOpen}>
                             Registration
                         </button>
                     </div>

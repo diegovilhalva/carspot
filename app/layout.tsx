@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-
+import RegisterDialog from "@/components/auth/RegisterDialog";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import LoginDialog from "@/components/auth/LoginDialog";
 
 
 export const metadata: Metadata = {
@@ -19,8 +21,12 @@ export default function RootLayout({
       <body
         className={`bg-[#ebf2f7] antialiased`}
       >
-        {children}
-        <Toaster/>
+        <NuqsAdapter>
+          <RegisterDialog />
+          <LoginDialog />
+          {children}
+        </NuqsAdapter>
+        <Toaster />
       </body>
     </html>
   );
