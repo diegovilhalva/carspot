@@ -9,10 +9,19 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import useRegisterDialog from "@/hooks/use-register-dialog"
 import useLoginDialog from "@/hooks/use-login-dialog"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { loginMutationFn } from "@/lib/fetcher"
+import { toast } from "@/hooks/use-toast"
+import { Loader } from "lucide-react"
 
 const LoginDialog = () => {
     const { open, onClose } = useLoginDialog()
     const { onOpen } = useRegisterDialog()
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+      mutationFn: loginMutationFn,
+    });
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -23,7 +32,28 @@ const LoginDialog = () => {
     })
 
     const onSubmit = (values: z.infer<typeof loginSchema>) => {
-
+        mutate(values, {
+            onSuccess: () => {
+              queryClient.refetchQueries({
+                queryKey: ["currentUser"],
+              });
+      
+              toast({
+                title: "Login Successfully",
+                description: "You have been logged in successfully",
+                variant: "success",
+              });
+              form.reset();
+              onClose();
+            },
+            onError: () => {
+              toast({
+                title: "Error occurred",
+                description: "Login failed, please try again",
+                variant: "destructive",
+              });
+            },
+          })
     }
 
     const handleRegisterOpen = () => {
@@ -81,12 +111,12 @@ const LoginDialog = () => {
                                 </FormItem>
                             )}
                         />
-                    </form>
                     <Button
                         size="lg"
-                        className="w-full" type="submit">
-                        Login
+                        className="w-full" type="submit" disabled={isPending}>
+                        {isPending ? <Loader className="w-4 h-4 animate-spin" /> : "Login"} 
                     </Button>
+                    </form>
                 </Form>
                 <div className="mt-2  flex items-center justify-center">
                     <p className="text-sm text-muted-foreground">

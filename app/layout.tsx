@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import RegisterDialog from "@/components/auth/RegisterDialog";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import LoginDialog from "@/components/auth/LoginDialog";
+import QueryProvider from "@/context/query-provider";
 
 
 export const metadata: Metadata = {
@@ -21,12 +22,16 @@ export default function RootLayout({
       <body
         className={`bg-[#ebf2f7] antialiased`}
       >
+        <QueryProvider>
+
         <NuqsAdapter>
+
           <RegisterDialog />
           <LoginDialog />
           {children}
         </NuqsAdapter>
         <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );

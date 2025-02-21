@@ -9,10 +9,19 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import useRegisterDialog from "@/hooks/use-register-dialog"
 import useLoginDialog from "@/hooks/use-login-dialog"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { registerMutationFn } from "@/lib/fetcher"
+import { toast } from "@/hooks/use-toast"
+import { Loader } from "lucide-react"
 
 const RegisterDialog = () => {
     const { open, onClose } = useRegisterDialog()
     const { onOpen } = useLoginDialog()
+    const queryClient = useQueryClient()
+    const { mutate, isPending } = useMutation({
+        mutationFn: registerMutationFn,
+
+    })
 
     const form = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
@@ -25,7 +34,27 @@ const RegisterDialog = () => {
     })
 
     const onSubmit = (values: z.infer<typeof signupSchema>) => {
-
+        mutate(values, {
+            onSuccess: () => {
+                queryClient.refetchQueries({
+                    queryKey: ["currentUser"]
+                })
+                toast({
+                    title: "Registration successful",
+                    description: "",
+                    variant: "success"
+                })
+                form.reset()
+                onClose()
+            },
+            onError: (err: any) => {
+                toast({
+                    title: "Error occurred",
+                    description: "Registration failed. Please try again",
+                    variant: "destructive"
+                })
+            }
+        })
     }
 
     const handleLoginOpen = () => {
@@ -107,12 +136,13 @@ const RegisterDialog = () => {
                                 </FormItem>
                             )}
                         />
+                        <Button
+                            size="lg"
+                            className="w-full" type="submit" disabled={isPending}>
+
+                            {isPending ? <Loader className="h-4 w-4 animate-spin" /> : "Register"}
+                        </Button>
                     </form>
-                    <Button
-                        size="lg"
-                        className="w-full" type="submit">
-                        Register
-                    </Button>
                 </Form>
                 <div className="mt-2  flex items-center justify-center">
                     <p className="text-sm text-muted-foreground">
