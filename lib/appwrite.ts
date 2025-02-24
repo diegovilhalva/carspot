@@ -15,7 +15,7 @@ export async function createAdminClient() {
         get account() {
             return new Account(client);
         },
-        get databases(){
+        get databases() {
             return new Databases(client)
         }
     };
@@ -38,8 +38,18 @@ export async function createSessionClient() {
         get account() {
             return new Account(client);
         },
-        get databases(){
+        get databases() {
             return new Databases(client)
         }
     };
+}
+
+
+export async function getLoggedInUser() {
+    try {
+        const { account} = await createSessionClient()
+        return await account.get()
+    } catch (error) {
+        return null
+    }
 }

@@ -1,4 +1,4 @@
-"use client"    
+"use client"
 import { Loader, MessageSquareText, Plus, Search } from "lucide-react"
 import Logo from "./logo"
 import { Input } from "./ui/input"
@@ -27,20 +27,20 @@ const Navbar = () => {
     const { data: userData, isPending: isLoading } = useCurrentUser()
     const user = userData?.user
     const queryClient = useQueryClient()
-    const {mutate,isPending} = useMutation({
-        mutationFn:logoutMutationFn,
-        onSuccess:() => {
+    const { mutate, isPending } = useMutation({
+        mutationFn: logoutMutationFn,
+        onSuccess: () => {
             queryClient.setQueryData(["currentUser"], null)
             queryClient.invalidateQueries({
-                queryKey:["currentUser"]
+                queryKey: ["currentUser"]
             })
             router.push("/")
         },
-        onError:() => {
+        onError: () => {
             toast({
                 title: "Logout Failed",
                 description: "Please try again.",
-              });
+            });
         }
     })
     const handleSell = () => {
@@ -48,12 +48,12 @@ const Navbar = () => {
             onOpen()
             return
         }
-        router.push("/my-shop/add-listening")
+        router.push("/my-shop/add-listing")
     }
 
     const handleLogout = useCallback(() => {
         mutate()
-    },[mutate])
+    }, [mutate])
 
     const hideSearchPathname = ["/", "/my-shop/add-listing", "/profile-messages"];
     const hideNavPath = ["/my-shop", "/my-shop/add-listing", "/profile-messages"];
@@ -127,8 +127,11 @@ const Navbar = () => {
                                 <DropdownMenuTrigger asChild>
                                     <Avatar role="button" className="h-9 w-9 shadow-sm">
                                         <AvatarFallback className="text-sm uppercase">
-                                            {user?.name.charAt(0)}
-                                            {user?.name.charAt(1)}
+                                            {user?.name
+                                                .split(" ") 
+                                                .map((word:string) => word.charAt(0)) 
+                                                .slice(0, 2) 
+                                                .join("")}
                                         </AvatarFallback>
                                     </Avatar>
                                 </DropdownMenuTrigger>
