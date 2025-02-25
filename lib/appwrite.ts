@@ -1,6 +1,6 @@
 import "server-only"
 
-import { Account, Client, Databases } from "node-appwrite"
+import { Account, Client, Databases, Storage } from "node-appwrite"
 import { APP_CONFIG } from "./app-config";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE_NAME } from "@/constants/server";
@@ -22,6 +22,8 @@ export async function createAdminClient() {
 }
 
 
+
+
 export async function createSessionClient() {
     const client = new Client()
         .setEndpoint(APP_CONFIG.APPWRITE.ENDPOINT)
@@ -40,6 +42,9 @@ export async function createSessionClient() {
         },
         get databases() {
             return new Databases(client)
+        },
+        get storages(){
+            return new Storage(client)
         }
     };
 }
