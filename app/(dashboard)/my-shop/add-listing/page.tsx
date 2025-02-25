@@ -6,7 +6,9 @@ import { listingSchema } from "@/validations/listing.validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useWatch } from "react-hook-form"
 import { isValidPhoneNumber } from "react-phone-number-input"
+import FormGenerator from "@/components/FormGenerator"
 import { z } from "zod"
+import { Button } from "@/components/ui/button"
 
 const AddListing = () => {
   const listingClientSchema = listingSchema.extend({
@@ -126,6 +128,9 @@ const AddListing = () => {
 
                       ))}
                     </div>
+                  <Button type="submit" size="lg" className="mt-6 py-6 mb-4 w-full max-w-xs flex place-items-center justify-self-center" disabled={false}>
+                      Post Listing
+                    </Button>
                   </form>
                 </Form>
               </div>

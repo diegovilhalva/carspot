@@ -58,7 +58,7 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({ field, register, formValu
                         <Input
                             id={name}
                             type="text"
-                            className="!h-12 text-sm shadow-none placeholder:!text-muted-foreground"
+                            className="!h-12 text-sm shadow-none placeholder:!text-muted-foreground pl-9"
                             disabled={disabled}
                             placeholder={placeholder || label}
                             defaultValue={defaultValue}
@@ -170,3 +170,4 @@ const FormGenerator: React.FC<FormGeneratorProps> = ({ field, register, formValu
         </div>
     )
 }
+export default FormGenerator
