@@ -1,4 +1,4 @@
-import { LoginType, RegisterType } from "@/@types/api.type"
+import { ListingType, LoginType, RegisterType } from "@/@types/api.type"
 import axios from "axios"
 
 export const registerMutationFn = async (data: RegisterType) => await axios.post("/api/register", data);
@@ -12,3 +12,5 @@ export const getCurrentUserQueryFn = async () => {
 }
 
 export const logoutMutationFn = async () => await axios.post("/api/logout")
+
+export const addListingMutationFn = async (data:ListingType) => await axios.post("/api/add-listing",data)

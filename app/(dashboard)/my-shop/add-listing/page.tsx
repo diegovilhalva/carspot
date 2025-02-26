@@ -11,9 +11,24 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import FileUploader from "@/components/FileUploader"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { X } from "lucide-react"
+import { Loader, X } from "lucide-react"
+import { useRouter } from "next/navigation"
+import useCurrentUser from "@/hooks/api/use-current-user"
+import { useMutation } from "@tanstack/react-query"
+import { addListingMutationFn } from "@/lib/fetcher"
+import { CAR_BRAND_OPTIONS, CAR_MODEL_OPTIONS, CAR_YEAR_OPTIONS } from "@/constants/car-options"
+import { isNull } from "util"
+import { toast } from "@/hooks/use-toast"
 
 const AddListing = () => {
+  const router = useRouter()
+  const { data } = useCurrentUser()
+  const shop = data?.shop
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: addListingMutationFn,
+
+  })
   const listingClientSchema = listingSchema.extend({
     contactPhone: z
       .string({
@@ -71,12 +86,49 @@ const AddListing = () => {
     form.setValue("imageUrls", updatedImageUrls);
   }
 
+  const getLabel = (value: string, options: { value: string; label: string; }[]) => {
+    const option = options.find((opt) => opt.value === value)
+    return option ? option.label : value
+  }
+
   function onSubmit(values: FormDataType) {
     const { brand, model, condition, yearOfManufacture, exteriorColor } = values
 
     const displayTitle = [
+      condition === "BRAND_NEw" ? "New" : null,
+      getLabel(brand, CAR_BRAND_OPTIONS),
+      getLabel(model, CAR_MODEL_OPTIONS),
+      getLabel(yearOfManufacture, CAR_YEAR_OPTIONS),
+      exteriorColor !== "other"
+        ? getLabel(exteriorColor, CAR_YEAR_OPTIONS)
+        : null
 
-    ]
+    ].filter(Boolean)
+      .join(" ")
+
+    const payload = {
+      ...values,
+      displayTitle,
+      shopId: shop?.$id
+    }
+
+    mutate(payload, {
+      onSuccess: () => {
+        toast({
+          title: "Listing added successfully",
+          description: "Your listing is now live on the platform",
+          variant: "success",
+        })
+        router.push("/my-shop")
+      },
+      onError: (error) => {
+        toast({
+          title: "Something went wrong",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    })
   }
   return (
     <main className="container mx-auto px-4 pt-3 pb-8">
@@ -147,7 +199,7 @@ const AddListing = () => {
                           key={index}
                           control={form.control}
                           name={field.name as FormFieldName}
-                          disabled={field.disabled}
+                          disabled={field.disabled || isPending}
                           render={({ field: formField }) => {
                             const filteredModels =
                               field.name === "model" && brand
@@ -187,8 +239,8 @@ const AddListing = () => {
 
                       ))}
                     </div>
-                    <Button type="submit" size="lg" className="mt-6 py-6 mb-4 w-full max-w-xs flex place-items-center justify-self-center" disabled={false}>
-                      Post Listing
+                    <Button type="submit" size="lg" className="mt-6 py-6 mb-4 w-full max-w-xs flex place-items-center justify-self-center" disabled={isPending}>
+                      {isPending ? <Loader className="w-4 h-4 animate-spin" /> : "Post Listing"}
                     </Button>
                   </form>
                 </Form>
