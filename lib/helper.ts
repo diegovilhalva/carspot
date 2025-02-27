@@ -10,3 +10,15 @@ export const slugToCarName = (slug:string):string => {
     const name = words?.map((word) => word.charAt(0)?.toUpperCase() + word.slice(1))?.join(" ")
     return name
 }
+
+export const formatCurrency = (amount:number,options:Intl.NumberFormatOptions = {
+    style:"currency",
+    currency:"USD",
+    minimumFractionDigits:0,
+    maximumFractionDigits:0
+}):string => {
+    if (typeof  amount !== "number" || isNaN(amount)) {
+        return "$0"
+    }
+    return amount.toLocaleString("en-US",options)
+}

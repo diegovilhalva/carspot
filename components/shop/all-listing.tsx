@@ -18,20 +18,20 @@ const AllListing = ({ listings, isPending }: { listings: ListingType[], isPendin
                         All Listing ({listings.length || 0})
                     </h2>
                     <div className="flex  items-center justify-center">
-                        <Grid3x3
+                        {/*<Grid3x3
                             role="button"
                             onClick={() => {
                                 setLayout("grid");
                             }}
                             className={`${layout === "grid" ? "text-primary" : ""}`}
-                        />
-                        <List
+                        />*/}
+                        {/*<List
                             role="button"
                             onClick={() => {
                                 setLayout("list");
                             }}
                             className={`ml-2 ${layout === "list" ? "text-primary" : ""}`}
-                        />
+                        />*/}
                     </div>
                 </div>
                 {
