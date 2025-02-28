@@ -46,3 +46,15 @@ export type ListingType = {
     shopId: string;
     shop?: ShopType;
 }
+
+export type ALLCarListingPayloadType = {
+    brand?: string[];
+    model?: string[];
+    color?: string[];
+    condition?: string[];
+    price?: string;
+    keyword?: string;
+    year_min?: number;
+    year_max?: number;
+    fuelType?: string[];
+}
